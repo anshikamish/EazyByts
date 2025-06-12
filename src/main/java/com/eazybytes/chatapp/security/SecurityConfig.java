@@ -57,7 +57,7 @@ public class SecurityConfig {
                 // ✅ FIX: Allow room chat history endpoint
                 .requestMatchers(HttpMethod.GET, "/api/chat-messages/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/chat-messages/**").permitAll()
-
+                .requestMatchers("/","/error").permitAll()
 
                 // Any other requests need authentication
                 .anyRequest().authenticated()
