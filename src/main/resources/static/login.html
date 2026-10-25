@@ -155,19 +155,37 @@
     async function loginUser(event) {
       event.preventDefault();
 
-      const usernameInput = document.getElementById('username').value.trim();
-      localStorage.setItem("username", usernameInput);
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-      alert("Login successful!");
-      window.location.href = "chat.html";
-    }
-
-    // Auto redirect if already logged in
-    window.onload = () => {
-      if (localStorage.getItem("username")) {
-        window.location.href = "chat.html";
+      if (!username || !password) {
+        alert("Please enter username and password");
+        return;
       }
-    };
+
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem("jwt", data.token);
+          localStorage.setItem("username", username);
+          alert("Login successful!");
+          window.location.href = "chat.html";
+        } else {
+          alert("Invalid username or password! (User does not exist in database)");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("Server error, please try again.");
+      }
+    }
   </script>
 </body>
 </html>
